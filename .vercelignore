@@ -1,0 +1,17 @@
+data/
+scripts/
+notebooks/
+tests/
+*.csv
+BUDGET_LEDGER.md
+SPEC.md
+Individual RAG Assignment.pdf
+.env
+.env.example
+.git
+.gitignore
+__pycache__/
+*.pyc
+.venv/
+venv/
+README.md

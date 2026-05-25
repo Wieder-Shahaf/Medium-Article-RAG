@@ -1,0 +1,47 @@
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# Dataset (do not commit per assignment)
+medium-english-50mb.csv
+*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel/
+
+# Local agent / IDE config
+.claude/
+CLAUDE.md
+
+# Budget ledger (internal tracking, not for grading)
+BUDGET_LEDGER.md
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+.vercel
+
+# Dev artifacts
+eval_results_*.json
+phase*_ingest.log
+SPEC.md
+*.notes.md
+
