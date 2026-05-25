@@ -45,3 +45,6 @@ phase*_ingest.log
 SPEC.md
 *.notes.md
 
+# Benchmark data files (large, regeneratable). Reports + scripts are tracked.
+benchmarks/*.jsonl
+
