@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#000" />
+<title>Medium RAG — Article Q&A</title>
+<style>
+  :root {
+    --bg: hsla(0, 0%, 4%, 1);
+    --panel: hsla(0, 0%, 7%, 1);
+    --panel-2: hsla(0, 0%, 10%, 1);
+    --border: hsla(0, 0%, 16%, 1);
+    --border-strong: hsla(0, 0%, 28%, 1);
+    --fg: hsla(0, 0%, 100%, 0.92);
+    --fg-dim: hsla(0, 0%, 63%, 1);
+    --fg-mute: hsla(0, 0%, 40%, 1);
+    --accent: hsla(0, 0%, 100%, 1);
+    --link: #3291ff;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Noto Sans", Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 32px 96px;
+  }
+
+  /* Header */
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 48px; }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.02em; color: var(--fg);
+  }
+  .logo .dot {
+    width: 8px; height: 8px; background: var(--fg); display: inline-block;
+  }
+  .meta { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); }
+  .meta a { color: var(--fg-dim); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .meta a:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  /* Hero */
+  .hero h1 {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    color: var(--fg);
+  }
+  .hero p.lead {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--fg-dim);
+    margin: 0 0 32px;
+    max-width: 620px;
+  }
+
+  /* Stats strip */
+  .stats {
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .stats .cell {
+    flex: 1;
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+  }
+  .stats .cell:last-child { border-right: 0; }
+  .stats .k { color: var(--fg-mute); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10px; }
+  .stats .v { color: var(--fg); margin-top: 2px; font-size: 13px; }
+
+  /* Form */
+  form { position: relative; }
+  textarea {
+    width: 100%;
+    min-height: 96px;
+    padding: 16px 18px;
+    background: var(--panel);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 120ms ease;
+  }
+  textarea:focus { border-color: var(--border-strong); }
+  textarea::placeholder { color: var(--fg-mute); }
+
+  .row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; gap: 12px; flex-wrap: wrap;
+  }
+  .hint { font-family: var(--mono); font-size: 11px; color: var(--fg-mute); }
+  .hint kbd {
+    border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 2px;
+    font-family: var(--mono); font-size: 10px; color: var(--fg-dim);
+  }
+
+  button {
+    appearance: none;
+    background: var(--fg);
+    color: var(--bg);
+    border: 1px solid var(--fg);
+    padding: 9px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: opacity 120ms ease;
+  }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Output */
+  .out { margin-top: 40px; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin: 0 0 12px;
+  }
+
+  .answer {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px 22px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--fg);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .sources { margin-top: 32px; }
+  .source {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .source-head {
+    display: flex; justify-content: space-between; gap: 16px;
+    align-items: baseline; margin-bottom: 6px;
+  }
+  .source-title { color: var(--fg); font-weight: 500; }
+  .source-meta { color: var(--fg-mute); font-size: 10px; letter-spacing: 0.04em; }
+  .source-chunk {
+    color: var(--fg-dim); font-size: 12px; line-height: 1.6;
+    max-height: 0; overflow: hidden; transition: max-height 200ms ease;
+  }
+  .source.open .source-chunk { max-height: 600px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .source-toggle {
+    background: none; border: 0; color: var(--fg-dim); padding: 0; font-family: var(--mono);
+    font-size: 10px; cursor: pointer; letter-spacing: 0.06em;
+  }
+  .source-toggle:hover { color: var(--fg); }
+
+  .prompt-toggle {
+    margin-top: 32px;
+    background: none; border: 1px solid var(--border);
+    color: var(--fg-dim); padding: 8px 14px;
+    font-family: var(--mono); font-size: 11px; cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .prompt-toggle:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  .augmented {
+    display: none;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+  }
+  .augmented.open { display: block; }
+  .augmented .block { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .augmented .block:last-child { border-bottom: 0; }
+  .augmented .k {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--fg-mute); margin-bottom: 6px;
+  }
+  .augmented pre {
+    margin: 0;
+    font-family: var(--mono); font-size: 11px; line-height: 1.6;
+    color: var(--fg-dim); white-space: pre-wrap; word-break: break-word;
+    max-height: 280px; overflow: auto;
+  }
+
+  /* Loader */
+  .loader {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11px; color: var(--fg-mute);
+  }
+  .loader .pulse {
+    width: 6px; height: 6px; background: var(--fg-dim);
+    animation: pulse 1s infinite ease-in-out;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 0.3 } 50% { opacity: 1 } }
+
+  .error {
+    border: 1px solid hsla(0, 70%, 50%, 0.4);
+    background: hsla(0, 60%, 10%, 0.4);
+    color: hsla(0, 70%, 80%, 1);
+    padding: 12px 16px;
+    font-family: var(--mono); font-size: 12px;
+  }
+
+  footer {
+    margin-top: 72px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 10px; color: var(--fg-mute);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo"><span class="dot"></span><span>medium-rag</span></div>
+    <div class="meta">
+      <a href="/api/stats" target="_blank">/api/stats</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/Wieder-Shahaf/Medium-Article-RAG" target="_blank">github</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Ask the Medium corpus.</h1>
+    <p class="lead">
+      Retrieval-augmented Q&amp;A over ~7,600 Medium articles. Answers are
+      grounded strictly in retrieved passages — no external knowledge.
+    </p>
+  </section>
+
+  <div class="stats" id="stats">
+    <div class="cell"><div class="k">chunk_size</div><div class="v" id="s-chunk">—</div></div>
+    <div class="cell"><div class="k">overlap_ratio</div><div class="v" id="s-overlap">—</div></div>
+    <div class="cell"><div class="k">top_k</div><div class="v" id="s-topk">—</div></div>
+  </div>
+
+  <form id="form">
+    <textarea
+      id="q"
+      placeholder="e.g.  Recommend an article about machine learning and explain why."
+      autofocus
+    ></textarea>
+    <div class="row">
+      <div class="hint">submit&nbsp; <kbd>⌘</kbd>&nbsp;<kbd>↵</kbd> &nbsp;or&nbsp; <kbd>Ctrl</kbd>&nbsp;<kbd>↵</kbd></div>
+      <button id="ask" type="submit">ask →</button>
+    </div>
+  </form>
+
+  <div class="out" id="out" style="display:none;">
+    <p class="section-label" id="status-label">Answer</p>
+    <div class="answer" id="answer"></div>
+
+    <div class="sources" id="sources-wrap" style="display:none;">
+      <p class="section-label">Sources</p>
+      <div id="sources"></div>
+    </div>
+
+    <button class="prompt-toggle" id="aug-toggle" style="display:none;">view augmented prompt</button>
+    <div class="augmented" id="aug">
+      <div class="block">
+        <div class="k">System</div>
+        <pre id="aug-system"></pre>
+      </div>
+      <div class="block">
+        <div class="k">User</div>
+        <pre id="aug-user"></pre>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Medium-articles RAG · FastAPI · Pinecone · Vercel</span>
+    <span id="footer-stats"></span>
+  </footer>
+
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+
+  // Load /api/stats
+  fetch('/api/stats').then(r => r.json()).then(s => {
+    $('s-chunk').textContent = s.chunk_size;
+    $('s-overlap').textContent = s.overlap_ratio;
+    $('s-topk').textContent = s.top_k;
+    $('footer-stats').textContent = `chunk=${s.chunk_size} · overlap=${s.overlap_ratio} · top_k=${s.top_k}`;
+  }).catch(() => {});
+
+  const form = $('form');
+  const qEl = $('q');
+  const askBtn = $('ask');
+  const out = $('out');
+  const answerEl = $('answer');
+  const statusLabel = $('status-label');
+  const sourcesWrap = $('sources-wrap');
+  const sourcesEl = $('sources');
+  const augToggle = $('aug-toggle');
+  const augEl = $('aug');
+
+  function setLoading(isLoading) {
+    askBtn.disabled = isLoading;
+    askBtn.textContent = isLoading ? 'thinking…' : 'ask →';
+  }
+
+  function renderError(msg) {
+    out.style.display = 'block';
+    statusLabel.textContent = 'Error';
+    answerEl.outerHTML = `<div class="error" id="answer">${msg}</div>`;
+    sourcesWrap.style.display = 'none';
+    augToggle.style.display = 'none';
+    augEl.classList.remove('open');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function renderResult(data) {
+    out.style.display = 'block';
+    statusLabel.textContent = 'Answer';
+
+    // Re-create answer element fresh in case it was replaced by error markup
+    let aEl = $('answer');
+    if (!aEl || aEl.classList.contains('error')) {
+      const fresh = document.createElement('div');
+      fresh.id = 'answer';
+      fresh.className = 'answer';
+      const ref = $('sources-wrap');
+      ref.parentNode.insertBefore(fresh, ref);
+      aEl = fresh;
+    }
+    aEl.className = 'answer';
+    aEl.textContent = data.response || '';
+
+    // Sources
+    sourcesEl.innerHTML = '';
+    const ctx = Array.isArray(data.context) ? data.context : [];
+    if (ctx.length === 0) {
+      sourcesWrap.style.display = 'none';
+    } else {
+      sourcesWrap.style.display = 'block';
+      ctx.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'source';
+        div.innerHTML = `
+          <div class="source-head">
+            <div class="source-title">${escapeHtml(c.title || '(untitled)')}</div>
+            <div class="source-meta">id ${escapeHtml(c.article_id || '')} · score ${Number(c.score || 0).toFixed(4)}</div>
+          </div>
+          <button class="source-toggle" data-i="${i}">show chunk ▾</button>
+          <div class="source-chunk">${escapeHtml(c.chunk || '')}</div>
+        `;
+        sourcesEl.appendChild(div);
+      });
+      sourcesEl.querySelectorAll('.source-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const p = btn.closest('.source');
+          p.classList.toggle('open');
+          btn.textContent = p.classList.contains('open') ? 'hide chunk ▴' : 'show chunk ▾';
+        });
+      });
+    }
+
+    // Augmented prompt
+    const aug = data.Augmented_prompt || {};
+    $('aug-system').textContent = aug.System || '';
+    $('aug-user').textContent = aug.User || '';
+    augToggle.style.display = 'inline-block';
+    augEl.classList.remove('open');
+    augToggle.textContent = 'view augmented prompt';
+  }
+
+  augToggle.addEventListener('click', () => {
+    const open = augEl.classList.toggle('open');
+    augToggle.textContent = open ? 'hide augmented prompt' : 'view augmented prompt';
+  });
+
+  async function ask() {
+    const question = qEl.value.trim();
+    if (!question) return;
+    setLoading(true);
+    out.style.display = 'block';
+    statusLabel.innerHTML = '<span class="loader"><span class="pulse"></span>retrieving + generating</span>';
+    // Clear previous output
+    let aEl = $('answer');
+    if (aEl) aEl.textContent = '';
+    sourcesWrap.style.display = 'none';
+    augToggle.style.display = 'none';
+    augEl.classList.remove('open');
+
+    try {
+      const res = await fetch('/api/prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        renderError(`HTTP ${res.status} — ${escapeHtml(txt.slice(0, 240))}`);
+      } else {
+        const data = await res.json();
+        renderResult(data);
+      }
+    } catch (e) {
+      renderError(`Request failed: ${escapeHtml(e.message || String(e))}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); ask(); });
+  qEl.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); ask(); }
+  });
+})();
+</script>
+</body>
+</html>

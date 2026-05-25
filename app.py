@@ -13,7 +13,10 @@ from dotenv import load_dotenv
 
 load_dotenv()  # local .env; on Vercel env vars come from project settings
 
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, ConfigDict
 
 from rag.config import CHAT_MODEL, CHUNK_SIZE, OVERLAP_RATIO, TOP_K
@@ -80,6 +83,14 @@ def _chat() -> OpenAI:
 
 
 # ---- Routes ----
+
+_INDEX_HTML = (Path(__file__).parent / "static" / "index.html").read_text(encoding="utf-8")
+
+
+@app.get("/", response_class=HTMLResponse)
+def index() -> HTMLResponse:
+    return HTMLResponse(_INDEX_HTML)
+
 
 @app.get("/api/stats", response_model=StatsResponse)
 def stats() -> StatsResponse:
