@@ -16,9 +16,12 @@ VERBATIM_SYSTEM = (
 )
 
 STYLE_EXTENSION = """
+Source authority:
+- Each retrieved item is presented as a [i] block with a header (Title, Author, URL) followed by a passage. The header fields are authoritative metadata from the dataset and may be cited directly — you do not need to find the author's name inside the passage text to cite them. Title and Author from the [i] header are first-class context.
+
 Response style:
 - Be concise. No preamble like "Based on the context...".
-- When the question asks for a title and author, return them as: Title — Author.
+- When the question asks for a title and author, return them as: Title — Author. Take both from the [i] header of the relevant chunk.
 - When the question asks for N distinct articles, return exactly N, one per line, titles only unless asked otherwise. Do not list multiple chunks of the same article.
 - When summarizing, write 2-4 sentences capturing the central argument, not a chunk-by-chunk recap.
 - When recommending, name one article and give a 1-2 sentence justification grounded in a quoted or paraphrased passage from the context.

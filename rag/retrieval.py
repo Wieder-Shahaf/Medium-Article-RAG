@@ -60,6 +60,66 @@ def dedup_by_article_id(matches: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+# A quoted phrase is one or more of:  "..."  '...'  “...”  ‘...’
+_QUOTE_RE = re.compile(r'["“”](.+?)["“”]|[\'‘’](.{20,}?)[\'‘’]')
+
+
+def _extract_quoted_phrase(question: str) -> str | None:
+    """Return the longest quoted substring of >= 6 tokens, else None.
+
+    Used as a trigger for the C1-shaped lexical re-rank: when the user pastes
+    a verbatim phrase from an article, dense similarity puts ~3 same-topic
+    articles ahead of the literal-match one. Token overlap is the tiebreaker.
+    """
+    best = ""
+    for m in _QUOTE_RE.finditer(question):
+        candidate = (m.group(1) or m.group(2) or "").strip()
+        if len(candidate.split()) >= 6 and len(candidate) > len(best):
+            best = candidate
+    return best or None
+
+
+def _tokens(text: str) -> set[str]:
+    return {t for t in re.findall(r"\w+", text.lower()) if len(t) > 3}
+
+
+def lexical_rerank(
+    chunks: list[dict[str, Any]], quoted_phrase: str
+) -> list[dict[str, Any]]:
+    """Token-overlap tiebreaker: bump the chunk with strongest literal-match to position 1.
+
+    Pure reordering of the top-k — never adds or removes a chunk. Activates
+    only when the top-overlap chunk has at least 2x the median overlap of the
+    set AND strictly more overlap than the current position-1 chunk. These
+    guardrails keep the heuristic from misfiring on questions where multiple
+    chunks share the quoted phrase equally.
+    """
+    if len(chunks) < 2:
+        return chunks
+
+    q_tokens = _tokens(quoted_phrase)
+    if not q_tokens:
+        return chunks
+
+    overlaps = [
+        len(q_tokens & _tokens(c["metadata"].get("chunk", "")))
+        for c in chunks
+    ]
+
+    best_i = max(range(len(overlaps)), key=lambda i: overlaps[i])
+    if best_i == 0:
+        return chunks
+
+    sorted_overlaps = sorted(overlaps)
+    median = sorted_overlaps[len(sorted_overlaps) // 2]
+    threshold = max(2 * median, overlaps[0] + 1)
+    if overlaps[best_i] < threshold:
+        return chunks
+
+    promoted = chunks[best_i]
+    return [promoted] + [c for i, c in enumerate(chunks) if i != best_i]
+
+
 def retrieve(question: str, top_k: int = TOP_K, namespace: str = PINECONE_NAMESPACE) -> list[dict[str, Any]]:
     """Embed the cleaned question, query Pinecone with over-fetch, dedup, truncate.
 
@@ -83,6 +143,10 @@ def retrieve(question: str, top_k: int = TOP_K, namespace: str = PINECONE_NAMESP
     ]
 
     deduped = dedup_by_article_id(raw)[:top_k]
+
+    quoted = _extract_quoted_phrase(question)
+    if quoted:
+        deduped = lexical_rerank(deduped, quoted)
 
     return [
         {

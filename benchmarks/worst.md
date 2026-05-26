@@ -84,207 +84,203 @@
 
 ## Lowest faithfulness (15 shown)
 
+- **C1-0029** [C1] f=0 c=0 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "But in the past when I wasn’t writing, my work was only about the money"
+  > A: Medium Burnout Is A Real Thing — Edie Tuck
+
+Edie Tuck writes that she’d been “putting too much emphasis on the earnings and losing sight of the actual writing,”
+  > judge: Answer picks wrong article (Medium Burnout) instead of target 'Writing For Money Isn't What You Think' by Shannon Ashley. Also fabricates author 'Edie Tuck' not present in chunks, and invents a quote 
+
 - **C2-0009** [C2] f=0 c=0 idk=False
   > Q: List three different Medium articles about Women.
-  > A: No More Shame: A Journey of Body Acceptance
-Hair to Dye For
+  > A: Hair to Dye For
+No More Shame: A Journey of Body Acceptance
 What I Learned Loving My Husband’s Best Friend
-  > judge: Answer lists three article titles but none appear in the retrieved chunks as standalone articles tagged 'Women'. 'Hair to Dye For' is only mentioned as a fragment in chunk [5], not a retrieved article
+  > judge: Answer lists three article titles not present as retrieved articles in the context. None of the retrieved chunks are about Women tag; the listed titles appear fabricated or only loosely mentioned. Off
 
-- **C1-0029** [C1] f=1 c=1 idk=True
-  > Q: Which Medium article discusses the following idea, and who wrote it? "But in the past when I wasn’t writing, my work was only about the money"
-  > A: I don't know based on the provided Medium articles data.
+- **C2-0026** [C2] f=0 c=1 idk=False
+  > Q: List three different Medium articles about Love.
+  > A: What I Learned Loving My Husband’s Best Friend
+“That’s just what I needed to hear, thank you!”:
+5 Important Truths I Gained as a Romance Author
+  > judge: First title 'What I Learned Loving My Husband's Best Friend' does not appear in any retrieved chunk — fabricated. Second and third titles match chunks [4] and [7]. Only one clearly on-topic Love artic
 
-None of the retrieved excerpts contain that exact sentence. Similar ideas appear, for example: Edie Tu
-  > judge: Answer gives canonical IDK but then attributes specific author names (Edie Tuck, George Blue Kelly, Jun Wu) not present in retrieved chunks — fabricated authorship. Target article (Writing For Money I
+- **C1-0028** [C1] f=1 c=0 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "The pandemic has forced many of us to re-evaluate the systems that we’ve adopted as normat
+  > A: 2: The pitiless crowbar of events — Dan Hill
 
-- **C1-0035** [C1] f=1 c=1 idk=False
-  > Q: Which Medium article discusses the following idea, and who wrote it? "Writing is such solitary, interior work that it tends to attract introverts"
-  > A: If you want to be a writer, you have to write. — Kristina Martin
-
-Kristina Martin writes, “Writing is something you do alone. It’s a profession for introverts w
-  > judge: Answer names wrong article ('If you want to be a writer, you have to write.' by Kristina Martin) instead of target 'A Marketing Guide for Introverts' by Shaunta Grimes. The quoted passage isn't visibl
+Dan Hill argues that epidemics reveal the outcomes of our systems and that we must examine and rebuild them rather
+  > judge: Answer names article '2: The pitiless crowbar of events' by Dan Hill, but target is 'Jay-Z Would Say You Can Work For Yourself' by Joel Leon. Wrong article. Also the quoted text about 'Epidemic diseas
 
 - **C1-0039** [C1] f=1 c=0 idk=False
   > Q: Which Medium article discusses the following idea, and who wrote it? "And that realization of “I can do this” can carry over into other parts of life"
-  > A: Do Something Nobody Will Hear About — Kamga Tchassa
+  > A: You Don’t Need Permission — Daniel Bourke
 
-This article describes that idea: “Your sense of confidence and worth grows when I know what I am capable o
-  > judge: Answer picks 'Do Something Nobody Will Hear About' by Kamga Tchassa, but target is 'What Survival Experts Say About Quarantine Baking' by Dana G Smith (not in retrieved chunks). Author name 'Kamga Tch
+In "You Don’t Need Permission" Daniel Bourke recounts how his friend practised, said “You’re right, I think I’ve got 
+  > judge: Target article 'What Survival Experts Say About Quarantine Baking' by Dana G Smith is not in retrieved chunks. Answer picks 'You Don't Need Permission' by Daniel Bourke, which is on a related topic bu
+
+- **C1-0054** [C1] f=1 c=3 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "These images are all part of a rebranding project I’m visualizing for a veterinary technol
+  > A: The power of visualizing as a tool for creativity — Gil Gershoni
+
+Gil Gershoni writes, "In rebranding the veterinary technology company, I pulled inspiration fr
+  > judge: Correct article title and author identified (chunk 10). However, the quoted passage about 'rebranding the veterinary technology company' and 'afternoon walk with my own dog' is not present in any retr
 
 - **C1-0067** [C1] f=1 c=0 idk=False
   > Q: Which Medium article discusses the following idea, and who wrote it? "Programmers have access to a community of hundreds of thousands of developers that provide
   > A: Which is Better To Learn, Python or Node.Js? — Mosh Hamedani
 
-This article states that "Python is a more mature open-source language and has one of the biggest 
-  > judge: Answer cites article 'Which is Better To Learn, Python or Node.Js?' but attributes it to 'Mosh Hamedani' — author not in retrieved context (fabricated). Quoted text not visible in chunk 4. Target arti
+The article states “Python is a more mature open-source language and has one of the biggest user c
+  > judge: Target article 'Make Python Hundreds of Times Faster With a C-Extension' by Joshua Weinstein is not in retrieved chunks. Answer picks wrong article and fabricates author 'Mosh Hamedani' (not in contex
 
-- **C2-0006** [C2] f=1 c=1 idk=False
-  > Q: List three different Medium articles about Health.
-  > A: You Can’t Out-Train Your Diet — Believe Me
-The Double Burden of Respiratory NCDs and Air Pollution
-Skin Cancer & Computer Vision — A New Sense?
-  > judge: Answer lists 3 article titles but only 'You Can't Out-Train Your Diet' is explicitly mentioned in chunk [3]. The other two titles ('Double Burden of Respiratory NCDs' and 'Skin Cancer & Computer Visio
+- **C3-0005** [C3] f=1 c=2 idk=False
+  > Q: Summarize the central argument of the Medium article titled "Solution to Kaggle’s Ames House Price Competition:".
+  > A: The article "Solution to Kaggle’s Ames House Price Competition:" argues that converting categorical object columns to numeric labels using sklearn’s LabelEncode
+  > judge: Chunk 1 only mentions LabelEncoder exploration and prior approaches (living area, separating categorical/numerical). It does not show XGBRegressor use, dropping null columns, or the 94.22% validation 
 
-- **C2-0026** [C2] f=1 c=1 idk=False
-  > Q: List three different Medium articles about Love.
-  > A: 5 Important Truths I Gained as a Romance Author
-“That’s just what I needed to hear, thank you!”:
-I Fell Out Of Love With Medium
-  > judge: Three titles listed. '5 Important Truths I Gained as a Romance Author' and 'That's just what I needed to hear, thank you!' appear in context and touch on love. 'I Fell Out Of Love With Medium' is not 
+- **C3-0016** [C3] f=1 c=3 idk=False
+  > Q: Summarize the central argument of the Medium article titled "The Case For Eating a 90% Plant-Based Diet".
+  > A: "The Case For Eating a 90% Plant-Based Diet" argues for a flexible, mostly whole-food, plant-centered way of eating rather than strict dietary dogma. Julia Blum
+  > judge: Summary accurately captures central argument: flexible 90% plant-based approach balancing health/values/sustainability over strict dogma, aligning with chunk [1]. However, the specific Pollan quote an
 
-- **C3-0032** [C3] f=1 c=3 idk=False
+- **C3-0028** [C3] f=1 c=1 idk=True
+  > Q: Summarize the central argument of the Medium article titled "Depression Explained".
+  > A: I don't know based on the provided Medium articles data.
+
+The retrieved context contains no article titled "Depression Explained"; related items in the dataset 
+  > judge: Answer correctly says IDK since target article 'Depression Explained' is not in retrieved context. However, it fabricates author attributions (Ed Bullmore, Jim Woods, Valeria Black) not present in the
+
+- **C3-0032** [C3] f=1 c=2 idk=False
   > Q: Summarize the central argument of the Medium article titled "I joined Medium to make money".
-  > A: The ‘I made x amount in a month’ made me do it, Beth Van Der Pol writes: seeing how much was possible on Medium convinced her it was worth trying and sparked he
-  > judge: Answer correctly summarizes the target article's central argument (joined Medium for money, inspired by earnings posts). However, specific claims like '30-day publishing challenge', the quote about es
+  > A: The author says the promise of earnings — “The ‘I made x amount in a month’ made me do it” — is what pushed her to join and take Medium seriously. In "I joined 
+  > judge: Target article is retrieved (chunk 1). Answer captures the motivating hook ("I made x amount in a month") which is in context. However, claims about "daily-publishing habit" and "diversify income stre
 
-- **C3-0033** [C3] f=1 c=2 idk=False
-  > Q: Summarize the central argument of the Medium article titled "Brown Paper Packages".
-  > A: "Brown Paper Packages" argues that the simple, tactile ritual of receiving brown paper-wrapped parcels from the author's oma carried profound emotional weight, 
-  > judge: Chunk 5 supports sensory details (wrinkled/sueded paper, scented tissue, stollen) and emotional weight tied to oma. However, the direct quotes 'Christmas does not feel the same without brown paper pac
+- **C4-0014** [C4] f=1 c=2 idk=False
+  > Q: Recommend a Medium article about Freelancing and justify your choice using the article's content.
+  > A: The Simple Two-Step Funnel I Use to Qualify Freelance Leads — Lizzie Davey
 
-- **C4-0010** [C4] f=1 c=1 idk=False
-  > Q: Recommend a Medium article about Love and justify your choice using the article's content.
-  > A: Do You Want to Know Why Suffering Is so Seductive? — Eir Thunderbird
+I recommend "The Simple Two-Step Funnel I Use to Qualify Freelance Leads" because Li
+  > judge: Recommends article #9 from context (on-topic Freelancing). Justification quotes phrases ('creating content geared towards my target client', 'showed off my skill set', 'brought freelance leads directl
 
-I recommend "Do You Want to Know Why Suffering Is so Seductive?" because it directly exami
-  > judge: Recommends a specific article with justification, but the article is not tagged Love and is off-topic (about Medium writing/suffering, not love). Quotes like 'vented about my husband' and 'relationshi
+- **C4-0061** [C4] f=1 c=2 idk=False
+  > Q: Recommend a Medium article about Web Development and justify your choice using the article's content.
+  > A: Top Web Application Development Tools to Build a Website — A Smith
 
-- **C4-0036** [C4] f=1 c=3 idk=False
-  > Q: Recommend a Medium article about Relationships and justify your choice using the article's content.
-  > A: 5 Scientifically-Proven Ways Happy Couples Help Their Relationships Thrive
-
-It outlines practical, evidence-based habits—like "solution-oriented arguing" and lo
-  > judge: Recommends a specific on-topic article (244c2d246d67) with justification. 'Solution-oriented arguing' and 'opportunities to be happier' are in chunk [9]. However, the Sternberg intimacy/passion/commit
-
-- **C4-0040** [C4] f=1 c=1 idk=False
-  > Q: Recommend a Medium article about Food and justify your choice using the article's content.
-  > A: 21 Tips to Write Good Technical Articles
-
-The article contains a "Pay attention to food" section that discusses nutrition and cites studies (noting "it takes le
-  > judge: Recommendation picks '21 Tips to Write Good Technical Articles', but the retrieved chunk shown contains no 'Pay attention to food' section or the sugar-crash quote — these claims are not supported by 
-
-- **C4-0053** [C4] f=1 c=2 idk=False
-  > Q: Recommend a Medium article about Politics and justify your choice using the article's content.
-  > A: Start fixing the news — It urges readers to "learn a mutual language to speak critically and constructively about the news" and draws on journalism frameworks (
-  > judge: Recommends 'Start fixing the news' (chunk 9), on-topic for Politics. Justification partially grounded: 'learn a mutual language' phrase matches chunk. However, the Kovach/Rosenstiel citation and the q
+"Top Web Application Development Tools to Build a Website" is a practical primer that "goes 
+  > judge: Recommends a specific Web Development article present in context with justification paraphrasing it. However, author 'A Smith' is not in any retrieved chunk — fabricated attribution. Quoted phrase 'go
 
 - **C4-0067** [C4] f=1 c=3 idk=False
   > Q: Recommend a Medium article about Self-awareness and justify your choice using the article's content.
   > A: Become More Self-Aware in the Next 3 Minutes — Niklas Göke
 
-Recommend because "Become More Self-Aware in the Next 3 Minutes" offers a simple, actionable exercis
-  > judge: Recommends a specific on-topic article ('Become More Self-Aware in the Next 3 Minutes', chunk [6]) with justification, satisfying C4=3. However, the quoted phrases ('spend three minutes with the perso
+This piece is practical and immediate: it advises you to “spend three minutes with the person in the
+  > judge: Recommends a specific on-topic article (Become More Self-Aware in the Next 3 Minutes) with justification. However, the quoted lines ('spend three minutes with the person in the mirror'; 'Self-awarenes
 
-- **C1-0001** [C1] f=2 c=2 idk=False
-  > Q: Which Medium article discusses the following idea, and who wrote it? "How to get your product noticed Offer value in exchange for your customers’ attention Phot
-  > A: How to get your product noticed — Elliot Leibu
+- **C4-0071** [C4] f=1 c=3 idk=False
+  > Q: Recommend a Medium article about Development and justify your choice using the article's content.
+  > A: Tools Of The Best: Software Development Edition — Dmitrii Mokrushin
 
-The article’s opening lines include “Offer value in exchange for your customers’ attention” and “Recently I laun
-  > judge: Title matches chunk [1] exactly. Author 'Elliot Leibu' is not present in any retrieved chunk's metadata or text shown, so attributing the author is unsupported by context. Quoted opening lines are fai
+I recommend "Tools Of The Best: Software Development Edition" because it covers practical d
+  > judge: Recommends a specific Development-tagged article (4afca4ae220a) with justification. However, the quoted phrases ('write tests and keep the code as simple as possible', automate deployments, 'move in t
 
 ## Lowest correctness (15 shown)
 
-- **C1-0007** [C1] f=2 c=0 idk=False
+- **C1-0007** [C1] f=2 c=0 idk=True
   > Q: Which Medium article discusses the following idea, and who wrote it? "Ah, the halcyon days of yesteryear, when I could check facts about hair dye instead of COV
   > A: I don't know based on the provided Medium articles data.
 
-The closest matches are "My Embarrassing Lifelong Obsession with Blondness" — Phoenix Huber, which dis
-  > judge: Answer says 'I don't know' but then adds extra claims with author names (Phoenix Huber, Nick Raistrick) not present in retrieved chunks — minor fabrication of authors. Target article '20 Facts About C
+The dataset includes an article about hair dye and blondness ("My Embarrassing Lifelong Obsession with
+  > judge: Answer is canonical IDK but adds claims about specific authors (Phoenix Huber, Nick Raistrick) not present in retrieved chunks—unsupported attributions. Target article '20 Facts About COVID-19' by Gid
 
 - **C1-0013** [C1] f=2 c=0 idk=True
   > Q: Which Medium article discusses the following idea, and who wrote it? "There are 3.81 billion social media users in the world with an increase of 9.2% users ever
   > A: I don't know based on the provided Medium articles data.
 
-I checked the ten provided articles (for example, Chad Anderson’s "Social Media is Not “Social”" menti
-  > judge: Answer claims IDK but target article (25c0ba1686e2) IS in retrieved context at rank 10. Author/title attributions to Anderson, Radcliffe, Thomas are not verifiable from chunks shown (minor fabrication
+None of the retrieved articles include the exact statistic "There are 3.81 billion social media users 
+  > judge: Target article 'Don't Sell Your Emotions on Social Media' by Amey Band is in chunk [10], but answer says IDK. Faithfulness: claims about other articles are loosely grounded but attributed quotes/autho
 
 - **C1-0015** [C1] f=3 c=0 idk=True
   > Q: Which Medium article discusses the following idea, and who wrote it? "Some of the individual stories that resonated with me, were the victims who suffered from 
   > A: I don't know based on the provided Medium articles data.
 
-I checked the excerpts for the retrieved articles (for example, "Top 3 — On Writing and Mental Health.
-  > judge: Answer is canonical IDK; target article 'We Need Trained People to Deal with Mental Health Breaks' by Sam H Arnold not in retrieved chunks, so grounded refusal is faithful. Correctness 0 — fails C1 si
+None of the supplied article passages contain the exact sentence you quoted. The closest related piece
+  > judge: Answer correctly returns IDK since target article 'We Need Trained People to Deal with Mental Health Breaks' by Sam H Arnold is not in retrieved context. Mentions of other articles are grounded in ret
 
-- **C1-0037** [C1] f=3 c=0 idk=True
-  > Q: Which Medium article discusses the following idea, and who wrote it? "If they do nothing, and it’s bad, then they will be publicly thrashed for doing nothing"
-  > A: I don't know based on the provided Medium articles data.
+- **C1-0028** [C1] f=1 c=0 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "The pandemic has forced many of us to re-evaluate the systems that we’ve adopted as normat
+  > A: 2: The pitiless crowbar of events — Dan Hill
 
-I searched the supplied excerpts (for example, Jake Wilder’s "7 Ways to Improve Your Ability to Delive
-  > judge: Answer is canonical IDK; target article not in retrieved chunks, so grounding is appropriate. Faithfulness 3 since no fabrication. Correctness 0 for C1: fails to name target title 'Predicting American
+Dan Hill argues that epidemics reveal the outcomes of our systems and that we must examine and rebuild them rather
+  > judge: Answer names article '2: The pitiless crowbar of events' by Dan Hill, but target is 'Jay-Z Would Say You Can Work For Yourself' by Joel Leon. Wrong article. Also the quoted text about 'Epidemic diseas
+
+- **C1-0029** [C1] f=0 c=0 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "But in the past when I wasn’t writing, my work was only about the money"
+  > A: Medium Burnout Is A Real Thing — Edie Tuck
+
+Edie Tuck writes that she’d been “putting too much emphasis on the earnings and losing sight of the actual writing,”
+  > judge: Answer picks wrong article (Medium Burnout) instead of target 'Writing For Money Isn't What You Think' by Shannon Ashley. Also fabricates author 'Edie Tuck' not present in chunks, and invents a quote 
 
 - **C1-0039** [C1] f=1 c=0 idk=False
   > Q: Which Medium article discusses the following idea, and who wrote it? "And that realization of “I can do this” can carry over into other parts of life"
-  > A: Do Something Nobody Will Hear About — Kamga Tchassa
+  > A: You Don’t Need Permission — Daniel Bourke
 
-This article describes that idea: “Your sense of confidence and worth grows when I know what I am capable o
-  > judge: Answer picks 'Do Something Nobody Will Hear About' by Kamga Tchassa, but target is 'What Survival Experts Say About Quarantine Baking' by Dana G Smith (not in retrieved chunks). Author name 'Kamga Tch
+In "You Don’t Need Permission" Daniel Bourke recounts how his friend practised, said “You’re right, I think I’ve got 
+  > judge: Target article 'What Survival Experts Say About Quarantine Baking' by Dana G Smith is not in retrieved chunks. Answer picks 'You Don't Need Permission' by Daniel Bourke, which is on a related topic bu
+
+- **C1-0043** [C1] f=2 c=0 idk=True
+  > Q: Which Medium article discusses the following idea, and who wrote it? "Before digging in, let’s take a look at the topics covered in this article"
+  > A: I don't know based on the provided Medium articles data.
+
+I reviewed the ten retrieved article passages (items [1]–[10]) and none contains the exact sentence "B
+  > judge: Answer is canonical IDK but adds claims about specific passages (attributes a quote to 'Sean Myers' — no such author in chunks; that quote is from chunk [2] by different author). Minor unsupported att
 
 - **C1-0059** [C1] f=2 c=0 idk=False
   > Q: Which Medium article discusses the following idea, and who wrote it? "I sometimes feel Iike I am watching myself live my life"
-  > A: I don't know based on the provided Medium articles data.
+  > A: Decapitating Consciousness — Robert Epstein
 
-None of the retrieved excerpts include the exact sentence. Two articles touch on a similar idea — Robe
-  > judge: Answer gives canonical IDK phrase but then adds extra claims attributing specific authors (Robert Epstein, Michael Ham) not present in retrieved chunks — fabricated entities reduce faithfulness. Targe
+The article discusses self-observation: it asks “Who or what is doing all this observing?” and notes that the brain
+  > judge: Target article 'I Feel like I Am Watching the World Burn' not in retrieved chunks. Answer picks 'Decapitating Consciousness' — wrong article, off-topic from the quoted idea. Author 'Robert Epstein' no
 
 - **C1-0065** [C1] f=3 c=0 idk=True
   > Q: Which Medium article discusses the following idea, and who wrote it? "Introduction Each developer worked, working or will work with API for getting remote data"
   > A: I don't know based on the provided Medium articles data.
-
-I searched the supplied article excerpts: for example, "Develop and Deploy a Scalable RESTful API usin
-  > judge: Answer is canonical IDK; target article 'Flexible entities with class-transformer' by Ildar Timerbaev is absent from retrieved chunks, so IDK is faithful. However, correctness fails C1 since neither t
+  > judge: Target article 'Flexible entities with class-transformer' by Ildar Timerbaev not in retrieved chunks. IDK response is faithful (grounded refusal) but fails C1 (no title/author given). Correctness 0: w
 
 - **C1-0067** [C1] f=1 c=0 idk=False
   > Q: Which Medium article discusses the following idea, and who wrote it? "Programmers have access to a community of hundreds of thousands of developers that provide
   > A: Which is Better To Learn, Python or Node.Js? — Mosh Hamedani
 
-This article states that "Python is a more mature open-source language and has one of the biggest 
-  > judge: Answer cites article 'Which is Better To Learn, Python or Node.Js?' but attributes it to 'Mosh Hamedani' — author not in retrieved context (fabricated). Quoted text not visible in chunk 4. Target arti
+The article states “Python is a more mature open-source language and has one of the biggest user c
+  > judge: Target article 'Make Python Hundreds of Times Faster With a C-Extension' by Joshua Weinstein is not in retrieved chunks. Answer picks wrong article and fabricates author 'Mosh Hamedani' (not in contex
+
+- **C1-0073** [C1] f=3 c=0 idk=False
+  > Q: Which Medium article discusses the following idea, and who wrote it? "The k-nearest neighbors (KNN) algorithm is a simple, easy-to-implement supervised machine 
+  > A: 
+  > judge: Empty answer. No claims made, so nothing unsupported (faithfulness not penalized for fabrication). Does not match canonical IDK string. Fails C1: provides neither title nor author.
 
 - **C2-0008** [C2] f=3 c=0 idk=True
   > Q: List three different Medium articles about Lifestyle.
   > A: I don't know based on the provided Medium articles data.
 
-The retrieved articles do not include three pieces that are clearly about Lifestyle; only "Updated Sub
-  > judge: Answer is canonical IDK with grounded justification from retrieved chunks (Passive Asset mentions lifestyle; Curators lists it as a topic). No fabrication. However, C2 requires 3 distinct Lifestyle ar
+The retrieved items show that "Lifestyle" is a Medium topic ([2] lists "Lifestyle" under Life) and tha
+  > judge: Answer is canonical IDK, fully grounded in retrieved context (no fabrications). However, correctness fails C2: zero distinct Lifestyle-tagged articles listed. Retrieved chunks are about Medium/writing
 
 - **C2-0009** [C2] f=0 c=0 idk=False
   > Q: List three different Medium articles about Women.
-  > A: No More Shame: A Journey of Body Acceptance
-Hair to Dye For
+  > A: Hair to Dye For
+No More Shame: A Journey of Body Acceptance
 What I Learned Loving My Husband’s Best Friend
-  > judge: Answer lists three article titles but none appear in the retrieved chunks as standalone articles tagged 'Women'. 'Hair to Dye For' is only mentioned as a fragment in chunk [5], not a retrieved article
+  > judge: Answer lists three article titles not present as retrieved articles in the context. None of the retrieved chunks are about Women tag; the listed titles appear fabricated or only loosely mentioned. Off
 
 - **C2-0032** [C2] f=3 c=0 idk=False
   > Q: List three different Medium articles about Nonfiction.
   > A: 
-  > judge: Empty answer: lists zero articles about Nonfiction. No claims made, so trivially faithful, but fails C2 goal of returning 3 distinct on-topic articles.
+  > judge: Empty answer provided. No articles listed, so correctness is 0 for C2 (0 distinct on-topic articles). Faithfulness defaults to 3 since no claims were made to be unsupported. Not a canonical IDK respon
 
 - **C2-0038** [C2] f=3 c=0 idk=True
   > Q: List three different Medium articles about Humor.
   > A: I don't know based on the provided Medium articles data.
 
-The retrieved items only mention humor in passing (e.g., Kelly Eden’s "How to Submit to Medium Publica
-  > judge: Answer is canonical IDK; retrieved chunks indeed don't contain 3 distinct Humor-tagged articles, only passing mentions. Faithful to context. But correctness fails C2: zero on-topic Humor articles retu
-
-- **C2-0058** [C2] f=3 c=0 idk=False
-  > Q: List three different Medium articles about Society.
-  > A: 10 Reasons To Write On Medium During the Pandemic
-How to Get Your Article Distributed by the Medium Curators
-7 Insanely Good Reasons Why You Should Write On Med
-  > judge: All three titles appear verbatim in retrieved chunks (faithful). However, none are about 'Society' tag — they're about Medium writing/platform. No on-topic articles for Society listed. Correctness 0.
-
-- **C2-0073** [C2] f=3 c=0 idk=True
-  > Q: List three different Medium articles about History.
-  > A: I don't know based on the provided Medium articles data.
-
-The ten retrieved pieces all focus on Medium itself (curation, publications, monetization, formats) — 
-  > judge: Answer correctly returns canonical IDK since none of the retrieved chunks are tagged History or cover historical topics; all are about Medium itself. Faithful to context. Correctness 0 for C2: zero on
-
-- **C1-0006** [C1] f=3 c=1 idk=False
-  > Q: Which Medium article discusses the following idea, and who wrote it? "What is big data and how is it helping"
-  > A: Introducing you to Big Data and AI — Lauren Toulson
-
-The article states, "Some companies are benefiting greatly from the insights that machine learning and big 
-  > judge: Answer cites article [1] 'Introducing you to Big Data and AI' by Lauren Toulson with supported quotes (H&M, Amazon 2000 data points), so faithfulness is high. However, target article is 'How Big Data 
+The retrieved items do not clearly identify three distinct articles that are explicitly about Humor. F
+  > judge: Answer is canonical IDK with grounded reasoning from retrieved chunks (no fabrication). For C2, zero distinct on-topic Humor articles listed, so correctness=0. Faithfulness=3 since IDK is supported wh
 

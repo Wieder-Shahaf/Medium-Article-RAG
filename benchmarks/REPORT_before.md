@@ -14,9 +14,9 @@ Hyperparameters at run time (read from `rag/config.py`):
 | Cat | N | hit@1 | hit@3 | hit@10 | MRR | distinct_articles | n_gt_hits | distinct_gt@3 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | C1 | 75 | 62.7% | 74.7% | 86.7% | 0.703 | 10.0 | 0.87 | 0.75 |
-| C2 | 75 | 53.3% | 73.3% | 88.0% | 0.649 | 10.0 | 4.51 | 1.48 |
+| C2 | 75 | 53.3% | 73.3% | 88.0% | 0.649 | 10.0 | 4.52 | 1.48 |
 | C3 | 75 | 84.0% | 90.7% | 96.0% | 0.880 | 10.0 | 0.96 | 0.91 |
-| C4 | 75 | 61.3% | 80.0% | 86.7% | 0.709 | 10.0 | 4.97 | 1.67 |
+| C4 | 75 | 61.3% | 78.7% | 86.7% | 0.708 | 10.0 | 4.96 | 1.65 |
 
 Notes:
 - **hit@k**: fraction of questions whose ground-truth article appears in top-k.
@@ -31,10 +31,10 @@ Notes:
 
 | Cat | embed p50 | embed p95 | query p50 | query p95 | generate p50 | generate p95 | total p50 | total p95 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| C1 | 489 | 4156 | 184 | 361 | 9132 | 23913 | 10799 | 24520 |
-| C2 | 487 | 4185 | 186 | 209 | 7819 | 17913 | 8789 | 20002 |
-| C3 | 507 | 4134 | 186 | 347 | 9267 | 13280 | 10504 | 15681 |
-| C4 | 530 | 4103 | 189 | 230 | 12227 | 16713 | 13543 | 18409 |
+| C1 | 524 | 2572 | 204 | 236 | 6463 | 14413 | 7655 | 15379 |
+| C2 | 471 | 2538 | 203 | 224 | 5131 | 17293 | 6180 | 17766 |
+| C3 | 519 | 2410 | 205 | 232 | 7322 | 10584 | 8500 | 12806 |
+| C4 | 579 | 2722 | 199 | 217 | 10573 | 14082 | 11794 | 15452 |
 
 ---
 
@@ -42,24 +42,23 @@ Notes:
 
 | Cat | N | faithfulness | correctness | IDK rate |
 |---|---:|---:|---:|---:|
-| C1 | 75 | 2.72 / 3 | 2.37 / 3 | 10.7% |
-| C2 | 75 | 2.89 / 3 | 2.52 / 3 | 8.0% |
-| C3 | 75 | 2.63 / 3 | 2.93 / 3 | 4.0% |
-| C4 | 75 | 2.59 / 3 | 2.89 / 3 | 1.3% |
+| C1 | 75 | 2.67 / 3 | 2.39 / 3 | 9.3% |
+| C2 | 75 | 2.85 / 3 | 2.52 / 3 | 5.3% |
+| C3 | 75 | 2.59 / 3 | 2.96 / 3 | 4.0% |
+| C4 | 75 | 2.64 / 3 | 2.88 / 3 | 0.0% |
 
 Score distributions:
 
 | Cat | f=0 | f=1 | f=2 | f=3 | c=0 | c=1 | c=2 | c=3 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| C1 | 1 | 4 | 10 | 60 | 11 | 4 | 6 | 54 |
-| C2 | 2 | 0 | 2 | 71 | 6 | 6 | 6 | 57 |
-| C3 | 0 | 4 | 20 | 51 | 0 | 1 | 3 | 71 |
-| C4 | 0 | 4 | 23 | 48 | 0 | 2 | 4 | 69 |
+| C1 | 0 | 4 | 17 | 54 | 8 | 7 | 8 | 52 |
+| C2 | 1 | 2 | 4 | 68 | 6 | 7 | 4 | 58 |
+| C3 | 0 | 2 | 27 | 46 | 0 | 0 | 3 | 72 |
+| C4 | 0 | 5 | 17 | 53 | 0 | 2 | 5 | 68 |
 
 ---
 
 ## Improvement priorities (auto-derived)
 
 - **C2 multi-result diversity is below target.** Avg distinct on-topic articles in top-3 = 1.48 (target ≥ 2.5). Consider over-fetch ratio or MMR-style reranking to spread top-k across articles.
-- **C1 generation p95 = 23913 ms.** Long-tail latency from the chat model. Consider streaming for UX, or reducing the per-chunk context length.
-- **C1 IDK rate = 10.7%.** Over-conservative refusals. Check if retrieval actually contains the answer — if so, prompt is too strict.
+- **C1 generation p95 = 14413 ms.** Long-tail latency from the chat model. Consider streaming for UX, or reducing the per-chunk context length.
