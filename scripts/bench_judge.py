@@ -33,7 +33,9 @@ import argparse
 import json
 import subprocess
 import sys
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -200,6 +202,7 @@ def main() -> int:
     ap.add_argument("--timeout-s", type=int, default=300)
     ap.add_argument("--model", type=str, default="opus", help="claude --model (e.g., haiku, sonnet, opus)")
     ap.add_argument("--effort", type=str, default="max", help="claude --effort (low/medium/high/xhigh/max)")
+    ap.add_argument("--concurrency", type=int, default=10, help="Number of parallel claude CLI invocations")
     ap.add_argument("--restart", action="store_true")
     args = ap.parse_args()
 
@@ -222,52 +225,82 @@ def main() -> int:
 
     pending = [r for r in rows if r.get("qid") and r["qid"] not in done and "error" not in r]
     budget_str = "unlimited" if args.max_budget_usd <= 0 else f"${args.max_budget_usd}/call"
-    print(f"Judging {len(pending)} rows  model={args.model}  effort={args.effort}  budget={budget_str}  timeout {args.timeout_s}s")
+    print(
+        f"Judging {len(pending)} rows  model={args.model}  effort={args.effort}  "
+        f"budget={budget_str}  timeout {args.timeout_s}s  concurrency={args.concurrency}"
+    )
 
     n_ok = 0
     n_err = 0
     t0 = time.perf_counter()
+    write_lock = threading.Lock()
+    counter_lock = threading.Lock()
+    completed = 0
 
-    with args.out.open("a", encoding="utf-8") as f:
-        for i, row in enumerate(pending, start=1):
-            qid = row["qid"]
-            prompt = build_judge_prompt(row)
-            t_call = time.perf_counter()
-            parsed, raw = call_claude(prompt, JUDGE_SYSTEM, args.max_budget_usd, args.timeout_s, args.model, args.effort)
-            elapsed = time.perf_counter() - t_call
+    def judge_one(row: dict) -> dict:
+        nonlocal n_ok, n_err, completed
+        qid = row["qid"]
+        prompt = build_judge_prompt(row)
+        t_call = time.perf_counter()
+        parsed, raw = call_claude(
+            prompt, JUDGE_SYSTEM, args.max_budget_usd, args.timeout_s, args.model, args.effort
+        )
+        elapsed = time.perf_counter() - t_call
 
-            if parsed is None:
+        if parsed is None:
+            scored = {
+                "qid": qid,
+                "category": row["category"],
+                "judge_error": True,
+                "judge_raw": raw[:500],
+                "judge_ms": elapsed * 1000,
+            }
+            with counter_lock:
                 n_err += 1
-                scored = {
-                    "qid": qid,
-                    "category": row["category"],
-                    "judge_error": True,
-                    "judge_raw": raw[:500],
-                    "judge_ms": elapsed * 1000,
-                }
-            else:
+        else:
+            scored = {
+                "qid": qid,
+                "category": row["category"],
+                "faithfulness": parsed.get("faithfulness"),
+                "correctness": parsed.get("correctness"),
+                "idk": parsed.get("idk"),
+                "rationale": parsed.get("rationale", "")[:400],
+                "judge_ms": elapsed * 1000,
+            }
+            with counter_lock:
                 n_ok += 1
-                scored = {
-                    "qid": qid,
-                    "category": row["category"],
-                    "faithfulness": parsed.get("faithfulness"),
-                    "correctness": parsed.get("correctness"),
-                    "idk": parsed.get("idk"),
-                    "rationale": parsed.get("rationale", "")[:400],
-                    "judge_ms": elapsed * 1000,
-                }
-            f.write(json.dumps(scored, ensure_ascii=False) + "\n")
-            f.flush()
 
-            if i % 3 == 0 or i == len(pending):
-                total_elapsed = time.perf_counter() - t0
-                rate = i / total_elapsed
-                eta = (len(pending) - i) / rate if rate > 0 else 0
-                print(
-                    f"  [{i:>3}/{len(pending)}] {qid}  "
-                    f"f={scored.get('faithfulness')} c={scored.get('correctness')} idk={scored.get('idk')}  "
-                    f"({elapsed:.1f}s)  eta={eta:.0f}s  ok={n_ok} err={n_err}"
-                )
+        line = json.dumps(scored, ensure_ascii=False) + "\n"
+        with write_lock:
+            f_handle.write(line)
+            f_handle.flush()
+
+        with counter_lock:
+            completed += 1
+            done = completed
+
+        if done % 5 == 0 or done == len(pending):
+            total_elapsed = time.perf_counter() - t0
+            rate = done / total_elapsed if total_elapsed > 0 else 0
+            eta = (len(pending) - done) / rate if rate > 0 else 0
+            print(
+                f"  [{done:>3}/{len(pending)}] {qid}  "
+                f"f={scored.get('faithfulness')} c={scored.get('correctness')} idk={scored.get('idk')}  "
+                f"({elapsed:.1f}s)  eta={eta:.0f}s  ok={n_ok} err={n_err}",
+                flush=True,
+            )
+        return scored
+
+    with args.out.open("a", encoding="utf-8") as f_handle:
+        with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
+            futs = [ex.submit(judge_one, row) for row in pending]
+            for fut in as_completed(futs):
+                try:
+                    fut.result()
+                except Exception as e:
+                    print(f"  worker exception: {type(e).__name__}: {e}", flush=True)
+                    with counter_lock:
+                        n_err += 1
 
     print(f"Done. ok={n_ok} err={n_err} total={time.perf_counter() - t0:.0f}s -> {args.out.name}")
     return 0
